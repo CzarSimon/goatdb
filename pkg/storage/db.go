@@ -65,7 +65,7 @@ func (db *DB) storeTables() error {
 		return err
 	}
 	for _, table := range db.tables {
-		err := set([]byte(table.NameKey()), table, tx)
+		err := set([]byte(table.Key()), table, tx)
 		if err != nil {
 			return err
 		}

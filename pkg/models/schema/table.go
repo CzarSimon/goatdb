@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"encoding/json"
 	"fmt"
 )
 
@@ -8,6 +9,12 @@ const (
 	TablesKey    = "tables"
 	KeyDelimiter = ":"
 )
+
+// Entity storable entity that can be serialized and identified by a key.
+type Entity interface {
+	Key() string
+	Bytes() ([]byte, error)
+}
 
 // Table datastructure represnting tables.
 type Table struct {
@@ -31,16 +38,20 @@ func NewTable(name string, columns map[string]Column, constraints Constraints) T
 }
 
 // NameKey returns the identifying key for the table.
-func (t *Table) NameKey() string {
+func (t *Table) Key() string {
 	return CreateTableKey(t.Name)
+}
+
+// Bytes returns a representation of a table info as an array slice.
+func (t *Table) Bytes() ([]byte, error) {
+	return json.Marshal(*t)
+}
+
+func (t *Table) KeyPrefix() string {
+	return t.Key() + KeyDelimiter
 }
 
 // CreateTableKey creates the identifying key for a table.
 func CreateTableKey(name string) string {
 	return fmt.Sprintf("table%s%s", KeyDelimiter, name)
-}
-
-type Row struct {
-	Table *Table
-	Data  map[string]interface{}
 }

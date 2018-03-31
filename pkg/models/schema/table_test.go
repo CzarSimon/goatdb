@@ -17,9 +17,22 @@ func TestNewTable(t *testing.T) {
 
 func TestTableNameKey(t *testing.T) {
 	table := getTestTable("test", true)
-	actualKey := table.NameKey()
+	actualKey := table.Key()
 	if actualKey != "table:test" {
 		t.Errorf("Table.NameKey() wrong. Expected=table:test Got=%s", actualKey)
+	}
+}
+
+func TestTableBytes(t *testing.T) {
+	table := getTestTable("test", true)
+	bytes, err := table.Bytes()
+	if err != nil {
+		t.Fatalf("Unexpecte error from table.Bytes(). Err = %s", err)
+	}
+	expectedStr := `{"name":"test","columns":{"col1":{"name":"col1","Type":{"name":"VARCHAR","precision":{"precision":50,"scale":0,"applicable":true}}}},"constraints":{"primaryKey":{"columns":["col1"]}}}`
+	if expectedStr != string(bytes) {
+		t.Errorf("Unexpected value from table.Bytes.\nExpected=%s\nGot=%s",
+			expectedStr, string(bytes))
 	}
 }
 
