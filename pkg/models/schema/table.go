@@ -5,6 +5,7 @@ import (
 )
 
 const (
+	TablesKey    = "tables"
 	KeyDelimiter = ":"
 )
 
@@ -31,7 +32,12 @@ func NewTable(name string, columns map[string]Column, constraints Constraints) T
 
 // NameKey returns the identifying key for the table.
 func (t *Table) NameKey() string {
-	return fmt.Sprintf("table%s%s", KeyDelimiter, t.Name)
+	return CreateTableKey(t.Name)
+}
+
+// CreateTableKey creates the identifying key for a table.
+func CreateTableKey(name string) string {
+	return fmt.Sprintf("table%s%s", KeyDelimiter, name)
 }
 
 type Row struct {
